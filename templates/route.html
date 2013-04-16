@@ -5,7 +5,7 @@
         <div class="span12"> 
             <h2>Route stuff</h2>
 
-            <div id="map-canvas"></div>
+            <div id="map-canvas" ></div>
 
             <div class="row-fluid">
                 <div class="span6">
@@ -21,12 +21,14 @@
         </div>
     </div>
 </div>
+
+<!-- the following code is largely from a google api example -->
     <!--
     Include the maps javascript with sensor=true because this code is using a
     sensor (a GPS locator) to determine the user's location.
     See: https://developers.google.com/apis/maps/documentation/javascript/basics#SpecifyingSensor
     -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLRgngkm3HH0prR9QC3xeYS5KMSjVMtxg&v=3.exp&sensor=true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 
     <script>
       console.log("running script _at all_");
@@ -84,4 +86,6 @@
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
+<!-- end google api example -->
+
 {% endblock %}
