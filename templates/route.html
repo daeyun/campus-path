@@ -5,9 +5,7 @@
         <div class="span12"> 
             <h2>Route stuff</h2>
 
-            <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=urbana&amp;aq=&amp;sll=39.739318,-89.266507&amp;sspn=14.49946,15.336914&amp;ie=UTF8&amp;hq=&amp;hnear=Urbana,+Champaign,+Illinois&amp;t=m&amp;z=13&amp;iwloc=A&amp;output=embed"></iframe>
-
-            This is not the actual Google Maps API.
+            <div id="map-canvas"></div>
 
             <div class="row-fluid">
                 <div class="span6">
@@ -23,4 +21,67 @@
         </div>
     </div>
 </div>
+    <!--
+    Include the maps javascript with sensor=true because this code is using a
+    sensor (a GPS locator) to determine the user's location.
+    See: https://developers.google.com/apis/maps/documentation/javascript/basics#SpecifyingSensor
+    -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLRgngkm3HH0prR9QC3xeYS5KMSjVMtxg&v=3.exp&sensor=true"></script>
+
+    <script>
+      console.log("running script _at all_");
+      var map;
+
+      function initialize() {
+        console.log("running initialize function");
+
+        var mapOptions = {
+          zoom: 6,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        // Try HTML5 geolocation
+        if(navigator.geolocation) {
+          console.log("geolocation works");
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude,
+                                             position.coords.longitude);
+
+            var infowindow = new google.maps.InfoWindow({
+              map: map,
+              position: pos,
+              content: 'Location found using HTML5.'
+            });
+
+            map.setCenter(pos);
+          }, function() {
+            handleNoGeolocation(true);
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleNoGeolocation(false);
+        }
+      }
+
+      function handleNoGeolocation(errorFlag) {
+        if (errorFlag) {
+          var content = 'Error: The Geolocation service failed.';
+        } else {
+          var content = 'Error: Your browser doesn\'t support geolocation.';
+        }
+
+        var options = {
+          map: map,
+          position: new google.maps.LatLng(60, 105),
+          content: content
+        };
+
+        var infowindow = new google.maps.InfoWindow(options);
+        map.setCenter(options.position);
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 {% endblock %}
