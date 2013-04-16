@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12"> 
+            <h2>Route stuff</h2>
+
+            <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=urbana&amp;aq=&amp;sll=39.739318,-89.266507&amp;sspn=14.49946,15.336914&amp;ie=UTF8&amp;hq=&amp;hnear=Urbana,+Champaign,+Illinois&amp;t=m&amp;z=13&amp;iwloc=A&amp;output=embed"></iframe>
+
+            This is not the actual Google Maps API.
+
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>Left column</h4>
+                    Do stuff with javascript here
+                </div>
+                <div class="span6">
+                    <h4>Right column</h4>
+                    Route ID: 
+                    {{ route_id }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
