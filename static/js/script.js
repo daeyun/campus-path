@@ -3,34 +3,58 @@ $(function() {
 
     var locatingFrom, locatingTo;
     var map;
-    function initialize() {
+
+    // <!-- the following code is largely from a google api example -->
+    // <!--
+    // Include the maps javascript with sensor=true because this code is using a
+    // sensor (a GPS locator) to determine the user's location.
+    // See: https://developers.google.com/apis/maps/documentation/javascript/basics#SpecifyingSensor
+    // -->
+    // <!-- end google api example -->
+    function initialize(meters) {
+        console.log("running initialize function");
+
         var mapOptions = {
-            zoom: 16,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById('map-canvas'),
-            mapOptions);
+        mapOptions);
+
+        var markers = [];
+
+        for (var i = 0; i < meters.length; ++i) {
+            l = meters.data[i].split(', ')
+            var latLng = new google.maps.LatLng(l[0], l[1]);
+            var marker = new google.maps.Marker({
+                position: latLng,
+                draggable: false,
+            });
+            markers.push(marker);
+
+            var mcOptions = {gridSize: 50, maxZoom: 15};
+            markerClusterer = new MarkerClusterer(map, markers, mcOptions);
+
+        }
+
         // Try HTML5 geolocation
         if(navigator.geolocation) {
             console.log("geolocation works");
             navigator.geolocation.getCurrentPosition(function(position) {
                 var pos = new google.maps.LatLng(position.coords.latitude,
-                    position.coords.longitude);
+                position.coords.longitude);
 
-                var marker = new google.maps.Marker({
-                    position: pos, 
-                    map: map, 
-                    title:"Your current location. (within a "+position.coords.accuracy+" meter radius)",
-                    icon: "http://www.google.com/mapfiles/arrow.png"
+                var infowindow = new google.maps.InfoWindow({
+                    map: map,
+                    position: pos,
+                    content: 'Location found using HTML5.'
                 });
 
-
-
                 map.setCenter(pos);
-            }, function() {
+                }, function() {
                 handleNoGeolocation(true);
             });
-        } else {
+            } else {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
@@ -81,5 +105,14 @@ $(function() {
         });
 
     });
+
+
+
+    $.getJSON('/static/data/meters.json', function(data) {
+        initialize(data)
+    })
+    .done(function() { console.log( "second success" ); })
+    .fail(function() { console.log( "error" ); })
+    .always(function() { console.log( "complete" ); });
 
 });

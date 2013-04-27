@@ -71,10 +71,20 @@ class Initialize(webapp2.RequestHandler):
         self.response.out.write(status)
 
 
+class GetMeters(webapp2.RequestHandler):
+    def get(self):
+
+        q = ndb.GqlQuery("SELECT * FROM ParkingMeters")
+        result = q.fetch(1)
+
+        self.response.out.write(result)
+
+
 app = webapp2.WSGIApplication([
     ('/', MainView),
     ('/route/([0-9]+)', RouteView),
     ('/request', RequestRoutes),
     ('/submit', Submit),
+    ('/meters', GetMeters),
     ('/setup', Initialize),
 ], debug=True)
