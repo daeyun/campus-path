@@ -60,9 +60,21 @@ class Submit(webapp2.RequestHandler):
         self.response.out.write(status)
 
 
+class Initialize(webapp2.RequestHandler):
+    def get(self):
+        command = self.request.get("command")
+
+        if command == "populate":
+            populate()
+
+        status = "ok"
+        self.response.out.write(status)
+
+
 app = webapp2.WSGIApplication([
     ('/', MainView),
     ('/route/([0-9]+)', RouteView),
     ('/request', RequestRoutes),
     ('/submit', Submit),
+    ('/setup', Initialize),
 ], debug=True)
