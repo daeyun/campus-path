@@ -11,14 +11,28 @@ $(function() {
     // See: https://developers.google.com/apis/maps/documentation/javascript/basics#SpecifyingSensor
     // -->
     // <!-- end google api example -->
-    function initialize(meters) {
+    function initialize() {
         console.log("running initialize function");
 
+        var meters = (function () {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': '/static/data/meters.json',
+            'dataType': "json",
+            'success': function (data) {
+            json = data;
+            }
+            });
+        return json;
+        })(); 
+        
         var mapOptions = {
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        map = new google.maps.Map(document.getElementById('map-canvas'),
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
 
         var markers = [];
@@ -32,10 +46,9 @@ $(function() {
             });
             markers.push(marker);
 
-            var mcOptions = {gridSize: 50, maxZoom: 15};
-            markerClusterer = new MarkerClusterer(map, markers, mcOptions);
-
         }
+            var mcOptions = {gridSize: 50, maxZoom: 15};
+            markerClusterer = new MarkerClusterer(map, markers);
 
         // Try HTML5 geolocation
         if(navigator.geolocation) {
@@ -58,7 +71,9 @@ $(function() {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
-    }
+        }
+    
+    google.maps.event.addDomListener(window, 'load', initialize);
 
     function handleNoGeolocation(errorFlag) {
         if (errorFlag) {
@@ -91,7 +106,6 @@ $(function() {
         e.preventDefault();
         $("#map-window").show();
         initialize();
-
         google.maps.event.addListener(map, "click", function(event) {
             var lat = event.latLng.lat();
             var lng = event.latLng.lng();
@@ -106,13 +120,11 @@ $(function() {
 
     });
 
-
-
-    $.getJSON('/static/data/meters.json', function(data) {
+   /* $.getJSON('/static/data/meters.json', function(data) {
         initialize(data)
     })
     .done(function() { console.log( "second success" ); })
     .fail(function() { console.log( "error" ); })
-    .always(function() { console.log( "complete" ); });
+    .always(function() { console.log( "complete" ); });*/
 
 });
