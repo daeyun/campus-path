@@ -29,7 +29,7 @@
     See: https://developers.google.com/apis/maps/documentation/javascript/basics#SpecifyingSensor
     -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
-
+    <script srg="meters.json">
     <script>
       console.log("running script _at all_");
       var map;
@@ -43,6 +43,20 @@
         };
         map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
+
+        var markers = [];
+
+        for (var i = 0; i < meters.length; ++i) {
+          var latLng = new google.maps.LatLng(meters.data[i].latitude, meters.data[i].longitude);
+          var marker = new google.maps.Marker({
+            position: latLng,
+            draggable: false,
+          });
+          markers.push(marker);
+
+        var mcOptions = {gridSize: 50, maxZoom: 15};
+        markerClusterer = new MarkerClusterer(map, markers, mcOptions);
+
 
         // Try HTML5 geolocation
         if(navigator.geolocation) {
