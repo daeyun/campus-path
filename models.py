@@ -4,5 +4,5 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext import ndb
 
 
-class ParkingMeter(ndb.Model):
-    location = ndb.GeoPtProperty()
+class ParkingMeters(ndb.Model):
+    locations = ndb.JsonProperty()

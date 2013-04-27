@@ -13,13 +13,17 @@ def populate():
                             delimiter=',', quotechar='"')
         finput = list(finput)
 
+        locations = []
         for row in finput[1:]:
             row = row[0].split(",")
-            lat = float(row[0][1:])
-            lon = float(row[1][:-1])
-            p = ParkingMeter(location=ndb.GeoPt(lat, lon))
-            k = p.put()
-            print k
+            lat = row[0][1:]
+            lon = row[1][:-1]
+            locations.append(lat+','+lon)
+
+        print locations
+        p = ParkingMeters(locations=locations)
+        k = p.put()
+        print k
 
     except IOError as (errno, strerror):
             print "I/O error({0}): {1}".format(errno, strerror)
