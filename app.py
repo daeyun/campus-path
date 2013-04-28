@@ -64,10 +64,10 @@ class Initialize(webapp2.RequestHandler):
     def get(self):
         command = self.request.get("command")
 
-        if command == "populate":
-            populate()
-
         status = "ok"
+        if command == "populate":
+            status = populate()
+
         self.response.out.write(status)
 
 

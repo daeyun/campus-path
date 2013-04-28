@@ -5,21 +5,13 @@ from google.appengine.ext import ndb
 
 from geo.geomodel import GeoModel
 
-class ParkingMeter(GeoModel):
-    #in minutes
-    time_limit = ndb.IntegerProperty()
+class ParkingMeter(GeoModel, ndb.Model):
+    time_limit = ndb.IntegerProperty()     #in minutes
+    time_per_quarter = ndb.IntegerProperty()     #in minutes per quarter
+    enforcement_start = ndb.IntegerProperty()    #in 24h times
+    enforcement_end = ndb.IntegerProperty()    #in 24h times
+    congestion = ndb.IntegerProperty()    #on a scale of 1-10
 
-    #in minutes per quarter
-    time_per_quarter = ndb.IntegerProperty()
-
-    #in 24h times
-    enforcement_start = ndb.IntegerProperty()
-
-    #in 24h times
-    enforcement_end = ndb.IntegerProperty()
-
-    #on a scale of 1-10
-    congestion = ndb.IntegerProperty()
 
     @staticmethod
     def public_attributes():
@@ -33,7 +25,7 @@ class ParkingMeter(GeoModel):
 
     def _set_latitude(self, lat):
         if not self.location:
-            self.location = db.GeoPt()
+            self.location = ndb.GeoPt()
 
         self.location.lat = lat
 
@@ -44,7 +36,7 @@ class ParkingMeter(GeoModel):
 
     def _set_longitude(self, lon):
         if not self.location:
-            self.location = db.GeoPt()
+            self.location = ndb.GeoPt()
 
         self.location.lon = lon
 
