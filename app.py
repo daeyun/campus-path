@@ -30,13 +30,25 @@ class RouteView(webapp2.RequestHandler):
 
 # /request
 # GET -> new_request: Request
-# Returns a list of routes sorted by travel time.
+# Returns a list of routes not currently sorted by travel time.
 class RequestRoutes(webapp2.RequestHandler):
     def get(self):
         new_request = self.request.get("new_request")
 
+        #I'm going to use a temp value for now so we can discuss what my request will look like 
+
+        place, (lat, lon) = geocode("700 E Green in Champaign")
+        
+        self.response.out.write(place)
+        
         # query the data store and get the result
+#        result = ParkingMeter.proximity_fetch(
+#            ParkingMeter.all(),
+#            geotypes.Point(lat, lon),
+#            max_results=100)
         result = {}
+
+        self.response.out.write(result)
 
         routes_stringified = json.dumps(result)
 
