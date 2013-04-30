@@ -87,14 +87,16 @@ $(function() {
 
         markerClusterer = new MarkerClusterer(map, markers);
 
-        var current_pos;
 
+        var current_lat, current_lon;
         // Try HTML5 geolocation
         if(navigator.geolocation) {
             console.log("geolocation works");
             navigator.geolocation.getCurrentPosition(function(position) {
                 var current_pos = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
+
+                calcRoute(current_pos);
 
                 var infowindow = new google.maps.InfoWindow({
                     map: map,
@@ -104,41 +106,12 @@ $(function() {
 
                 map.setCenter(current_pos);
                 }, function() {
-                handleNoGeolocation(true);
-
-
-
-
-            });
-            } else {
+                    handleNoGeolocation(true);
+                });
+        } else {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
-
-
-
-
-        function calcRoute(pos) {
-            var start = pos;
-            var request = {
-                origin:start,
-                destination:destination_query,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            console.log(destination_query);
-            directionsService.route(request, function(result, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(result);
-                }
-            });
-        }
-        calcRoute(current_pos);
-
-
-
-
-
-
 
 
     }
@@ -189,6 +162,22 @@ $(function() {
         });
 
     });
+
+    function calcRoute(pos) {
+        console.log(pos);
+        var start = pos;
+        var request = {
+            origin:start,
+            destination:destination_query,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        console.log(destination_query);
+        directionsService.route(request, function(result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(result);
+            }
+        });
+    }
     
     //Example used from google's direction API
 
