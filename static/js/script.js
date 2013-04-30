@@ -1,4 +1,6 @@
 $(function() {
+
+
     // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
     function getUrlVars()
     {
@@ -82,30 +84,63 @@ $(function() {
             markers.push(marker);
 
         }
-            var mcOptions = {gridSize: 50, maxZoom: 15};
-            markerClusterer = new MarkerClusterer(map, markers);
+
+        markerClusterer = new MarkerClusterer(map, markers);
+
+        var current_pos;
 
         // Try HTML5 geolocation
         if(navigator.geolocation) {
             console.log("geolocation works");
             navigator.geolocation.getCurrentPosition(function(position) {
-                var pos = new google.maps.LatLng(position.coords.latitude,
+                var current_pos = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
 
                 var infowindow = new google.maps.InfoWindow({
                     map: map,
-                    position: pos,
+                    position: current_pos,
                     content: 'Location found using HTML5.'
                 });
 
-                map.setCenter(pos);
+                map.setCenter(current_pos);
                 }, function() {
                 handleNoGeolocation(true);
+
+
+
+
             });
             } else {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
+
+
+
+
+        function calcRoute(pos) {
+            var start = pos;
+            var request = {
+                origin:start,
+                destination:destination_query,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            console.log(destination_query);
+            directionsService.route(request, function(result, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(result);
+                }
+            });
+        }
+        calcRoute(current_pos);
+
+
+
+
+
+
+
+
     }
     
     google.maps.event.addDomListener(window, 'load', initialize);
@@ -156,21 +191,6 @@ $(function() {
     });
     
     //Example used from google's direction API
-    function calcRoute() {
-      var start = "Illini Union Book Store";
-      var request = {
-        origin:start,
-        destination:destination_query,
-        travelMode: google.maps.TravelMode.DRIVING
-      };
-      console.log(destination_query);
-      directionsService.route(request, function(result, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(result);
-        }
-      });
-    }
-    calcRoute();
 
    /* $.getJSON('/static/data/meters.json', function(data) {
         initialize(data)
