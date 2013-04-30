@@ -80,6 +80,10 @@ $(function() {
             var marker = new google.maps.Marker({
                 position: latLng,
                 draggable: false,
+                data: meters.meters[i],
+            });
+            google.maps.event.addListener(marker, 'click', function(){
+                console.log(this.data);
             });
             markers.push(marker);
 
