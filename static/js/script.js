@@ -75,6 +75,9 @@ $(function() {
             icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
         });
         */
+        var infowindow_content = '';
+        var infowindow = new google.maps.InfoWindow({
+        });
 
         for (var i = 0; i < meters.meters.length; ++i) {
             lat = meters.meters[i].lat
@@ -86,8 +89,14 @@ $(function() {
                 data: meters.meters[i],
             });
             google.maps.event.addListener(marker, 'click', function(){
-                console.log(this.data);
+                infowindow.setContent(
+                    this.data.lat.toString() + "," +
+                    this.data.lon.toString() + "<br />" +
+                    this.data.congestion.toString()
+                    );
+                infowindow.open(map,this);
             });
+
             markers.push(marker);
 
         }
