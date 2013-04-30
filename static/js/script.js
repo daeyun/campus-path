@@ -1,4 +1,24 @@
 $(function() {
+    // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function urldecode(str) {
+        return decodeURIComponent((str+'').replace(/\+/g, '%20'));
+    }
+
+    destination_query = urldecode(getUrlVars().destination);
+    console.log(destination_query);
 
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
@@ -21,6 +41,7 @@ $(function() {
             'async': false,
             'global': false,
             'url': '/request',
+            'data' : {'new_request': destination_query},
             'dataType': "json",
             'success': function (data) {
             json = data;
