@@ -15,7 +15,7 @@ class ParkingMeter(GeoModel, ndb.Model):
 
     @staticmethod
     def public_attributes():
-        """Returns a set of simple attributes on public school entities."""
+        """Returns a set of simple attributes on parking meter entities."""
         return [
             'time_limit', 'time_per_quarter', 'enforcement_start', 'enforcement_end', 'congestion'
             ]
