@@ -46,15 +46,12 @@ class RequestRoutes(webapp2.RequestHandler):
         result = ParkingMeter.proximity_fetch(
             ParkingMeter.query(),
             geo.geotypes.Point(lat, lon),
-            max_results=100,
+            max_results=10,
             max_distance=50000)
 
-        self.response.out.write(result)
+        print [p.to_dict() for p in result]
 
-        routes_stringified = json.dumps(result)
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(routes_stringified)
 
 
 # /submit

@@ -24,13 +24,14 @@ def populate():
             row = row[0].split(",")
             lat = row[0][1:]
             lon = row[1][:-1]
-            parking_meter = ParkingMeter(location=ndb.GeoPt(lat, lon),
+            parking_meter = ParkingMeter(location=ndb.GeoPt(float(lat), float(lon)),
                                          time_limit=60,
                                          time_per_quarter=15,
                                          enforcement_start=8,
                                          enforcement_end=6,
                                          congestion=1)
             
+            parking_meter.update_location()
             parking_meter.put()
 
 
