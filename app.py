@@ -128,6 +128,11 @@ class Update(webapp2.RequestHandler):
             meter.enforcement_start=es
             meter.enforcement_end=ee
             meter.congestino=con
+
+        #be sure to stay consistent in memcache
+        #this can likely be made finer-grained at some point
+        memcache.flush_all_async()
+
         meter.put()
 
 
