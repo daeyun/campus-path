@@ -1,5 +1,72 @@
 $(function() {
 
+  function meterDisplay(meterData)
+  {
+    console.log(meterData);
+    retString = "";
+    var time_limit = parseInt(meterData.time_limit);
+    if (time_limit > 60)
+    {
+      retString = retString + (Math.floor(time_limit / 60)).toString() + " hour parking<br>"; 
+    }
+    else
+    {
+      retString = retString + time_limit.toString() + " minute parking<br>";
+    }
+
+    var start = parseInt(meterData.enforcement_start);
+    var end = parseInt(meterData.enforcement_end);
+
+    if (start > 12)
+    {
+      start = (start - 12).toString() + "PM";
+    }
+    else if (start === 0)
+    {
+      start = "12AM";
+    }
+    else
+    {
+      start = start.toString() + "AM";
+    }
+  
+    if (end > 12)
+    {
+      end = (end - 12).toString() + "PM";
+    }
+    else if (end === 0)
+    {
+      end = "12AM";
+    }
+    else
+    {
+      end = end.toString() + "AM";
+    }
+    retString = retString + "Meters enforced from " + start + " to " + end + "<br>";
+
+    var tpq = parseInt(meterData.time_per_quarter);
+    var cents = 100 * 15 / tpq % 100;
+    if (cents < 10)
+    {
+      cents = cents.toString() + "0";
+    }
+    else
+    {
+      cents = cents.toString();
+    }
+    retString = retString + "$" + parseInt(15 / tpq).toString() + "." + cents + " per hour<br>";
+
+    var con = parseInt(meterData.congestion);
+    if (con < 4)
+    {
+      retString = retString + "This meter is likely unoccupied<br>";
+    }
+    if (con > 7)
+    {
+      retString = retString + "This meter is frequently occupied<br>";
+    }
+    return retString;
+  }
 
     // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
     function getUrlVars()
@@ -89,10 +156,9 @@ $(function() {
                 data: meters.meters[i],
             });
             google.maps.event.addListener(marker, 'click', function(){
+              var meterData = this.data;
                 infowindow.setContent(
-                    this.data.lat.toString() + "," +
-                    this.data.lon.toString() + "<br />" +
-                    this.data.congestion.toString()
+                        meterDisplay(meterData)
                     );
                 infowindow.open(map,this);
             });
