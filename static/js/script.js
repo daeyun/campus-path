@@ -2,12 +2,10 @@ $(function() {
 
 
     // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
-    function getUrlVars()
-    {
+    function getUrlVars() {
         var vars = [], hash;
         var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for(var i = 0; i < hashes.length; i++)
-        {
+        for(var i = 0; i < hashes.length; i++) {
             hash = hashes[i].split('=');
             vars.push(hash[0]);
             vars[hash[0]] = hash[1];
@@ -21,7 +19,8 @@ $(function() {
 
     var destination_query = urldecode(getUrlVars().destination);
 
-    var directionsDisplay;
+    var drivingDirections;
+    var walkingDirections;
     var directionsService = new google.maps.DirectionsService();
     var locatingFrom, locatingTo;
     var map;
@@ -35,85 +34,76 @@ $(function() {
     // <!-- end google api example -->
     function initialize() {
         console.log("running initialize function");
-        directionsDisplay = new google.maps.DirectionsRenderer();
+        drivingDirections = new google.maps.DirectionsRenderer();
+        walkingDirections = new google.maps.DirectionsRenderer();
         var meters = (function () {
-        var json = null;
-        $.ajax({
-            'async': false,
-            'global': false,
-            'url': '/request',
-            'data' : {'new_request': destination_query},
-            'dataType': "json",
-            'success': function (data) {
-            json = data;
-            }
+            var json = null;
+            $.ajax({
+                'async': false,
+                'global': false,
+                'url': '/request',
+                'data' : {'new_request': destination_query},
+                'dataType': "json",
+                'success': function (data) {
+                    json = data;
+                }
             });
-        return json;
+            return json;
         })(); 
 
         $("span#location").html(meters.location_string);
 
-        
-        var mapOptions = {
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
-        directionsDisplay.setMap(map);
 
-        var markers = [];
 
-        /*
-        lat = parseFloat(meters.location_lon);
-        lon = parseFloat(meters.location_lat);
-        latLng = new google.maps.LatLng(lon, lat);
-        destination_marker = new google.maps.Marker({
-            position: latLng,
-            draggable: false,
-            map: map,
-            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-        });
-        */
-        var infowindow_content = '';
-        var infowindow = new google.maps.InfoWindow({
-        });
-
-        for (var i = 0; i < meters.meters.length; ++i) {
-            lat = meters.meters[i].lat
-            lon = meters.meters[i].lon
-            var latLng = new google.maps.LatLng(lat, lon);
-            var marker = new google.maps.Marker({
-                position: latLng,
-                draggable: false,
-                data: meters.meters[i],
-            });
-            google.maps.event.addListener(marker, 'click', function(){
-                infowindow.setContent(
-                    this.data.lat.toString() + "," +
-                    this.data.lon.toString() + "<br />" +
-                    this.data.congestion.toString()
-                    );
-                infowindow.open(map,this);
-            });
-
-            markers.push(marker);
-
-        }
-
-        var mcOptions = {gridSize: 30, maxZoom: 17};
-        markerClusterer = new MarkerClusterer(map, markers, mcOptions);
+        var infowindow = new google.maps.InfoWindow(); 
 
 
         var current_lat, current_lon;
-        // Try HTML5 geolocation
         if(navigator.geolocation) {
-            console.log("geolocation works");
             navigator.geolocation.getCurrentPosition(function(position) {
                 var current_pos = new google.maps.LatLng(position.coords.latitude,
-                position.coords.longitude);
+                    position.coords.longitude);
 
-                calcRoute(current_pos);
+
+
+                var mapOptions = {
+                    zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById('map-canvas'),
+                    mapOptions);
+                drivingDirections.setMap(map);
+                walkingDirections.setMap(map);
+
+                var markers = [];
+
+                for (var i = 0; i < meters.meters.length; ++i) {
+                    lat = meters.meters[i].lat;
+                    lon = meters.meters[i].lon;
+                    var latLng = new google.maps.LatLng(lat, lon);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        draggable: false,
+                        data: meters.meters[i],
+                    });
+                    google.maps.event.addListener(marker, 'click', function(){
+                        infowindow.setContent(
+                            this.data.lat.toString() + "," +
+                            this.data.lon.toString() + "<br />" +
+                            this.data.congestion.toString()
+                            );
+                        infowindow.open(map,this);
+
+                        meter_pos = new google.maps.LatLng(this.data.lat.toString(),
+                                                           this.data.lon.toString());
+                        calcRoute(drivingDirections, current_pos, meter_pos, "driving");
+                        calcRoute(walkingDirections, meter_pos, destination_query, "walking");
+
+                    });
+                    markers.push(marker);
+                }
+                var mcOptions = {gridSize: 30, maxZoom: 17};
+                markerClusterer = new MarkerClusterer(map, markers, mcOptions);
 
                 var infowindow = new google.maps.InfoWindow({
                     map: map,
@@ -122,17 +112,19 @@ $(function() {
                 });
 
                 map.setCenter(current_pos);
-                }, function() {
-                    handleNoGeolocation(true);
-                });
+
+            }, function() {
+                handleNoGeolocation(true);
+            });
         } else {
             // Browser doesn't support Geolocation
+            console.log("geolocation does not work");
             handleNoGeolocation(false);
         }
 
 
     }
-    
+
     google.maps.event.addDomListener(window, 'load', initialize);
 
     function handleNoGeolocation(errorFlag) {
@@ -170,32 +162,38 @@ $(function() {
             var lat = event.latLng.lat();
             var lng = event.latLng.lng();
             if (locatingFrom)
-                $("#inputFrom").val(lat + ", " + lng);
+            $("#inputFrom").val(lat + ", " + lng);
             else if (locatingTo)
-                $("#inputTo").val(lat + ", " + lng);
-            locatingFrom = false;
-            locatingTo = false;
-            $("#map-window").hide();
+            $("#inputTo").val(lat + ", " + lng);
+        locatingFrom = false;
+        locatingTo = false;
+        $("#map-window").hide();
         });
 
     });
 
-    function calcRoute(pos) {
-        console.log(pos);
-        var start = pos;
+    function calcRoute(directions, start, end, mode) {
+        var travelmode;
+        if (mode == "driving") {
+            travelmode = google.maps.TravelMode.DRIVING;
+        } else if (mode == "walking") {
+            travelmode = google.maps.TravelMode.WALKING;
+            directions.setOptions({ suppressMarkers: true });
+        }
+
         var request = {
             origin:start,
-            destination:destination_query,
-            travelMode: google.maps.TravelMode.DRIVING
+            destination:end,
+            travelMode: travelmode
         };
-        console.log(destination_query);
         directionsService.route(request, function(result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(result);
+                directions.setOptions({ preserveViewport: true });
+                directions.setDirections(result);
             }
         });
     }
-    
+
     function resize() {
         $("#map-canvas").css("height",$(window).height()-50);
     }
@@ -204,14 +202,14 @@ $(function() {
     $(window).resize(function() {
         resize();
     });
-    
+
     //Example used from google's direction API
 
-   /* $.getJSON('/static/data/meters.json', function(data) {
-        initialize(data)
-    })
-    .done(function() { console.log( "second success" ); })
-    .fail(function() { console.log( "error" ); })
-    .always(function() { console.log( "complete" ); });*/
+    /* $.getJSON('/static/data/meters.json', function(data) {
+       initialize(data)
+       })
+       .done(function() { console.log( "second success" ); })
+       .fail(function() { console.log( "error" ); })
+       .always(function() { console.log( "complete" ); });*/
 
 });
