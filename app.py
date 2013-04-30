@@ -32,7 +32,7 @@ class RouteView(webapp2.RequestHandler):
 # /request
 # GET -> new_request: Request
 # Returns a list of routes not currently sorted by travel time.
-class RequestRoutes(webapp2.RequestHandler):
+class RequestMeters(webapp2.RequestHandler):
     def get(self):
         new_request = self.request.get("new_request")
 
@@ -40,7 +40,7 @@ class RequestRoutes(webapp2.RequestHandler):
 
         place, (lat, lon) = geocode("700 E Green in Champaign")
         
-        self.response.out.write(place)
+#        self.response.out.write(place)
         
         # query the data store and get the result
         result = ParkingMeter.proximity_fetch(
@@ -49,9 +49,27 @@ class RequestRoutes(webapp2.RequestHandler):
             max_results=10,
             max_distance=50000)
 
-        print [p.to_dict() for p in result]
+        meters = []
 
+        for meter in result:
+            meter_dict={}
+            meter_dict['lat'] = meter._get_latitude()
+            meter_dict['lon'] = meter._get_longitude()
+            meter_dict['time_limit'] = meter.time_limit
+            meter_dict['time_per_quarter'] = meter.time_per_quarter
+            meter_dict['enforcement_start'] = meter.enforcement_start
+            meter_dict['enforcement_end'] = meter.enforcement_end
+            meter_dict['congestion'] = meter.congestion
+            meters.append(meter_dict)
 
+        return_dict = {}
+        return_dict['location_string'] = place
+        return_dict['location_lat'] = lat
+        return_dict['location_lon'] = lon
+        return_dict['meters'] = meters
+        
+        self.response.out.write(json.dumps(return_dict))
+            
 
 
 # /submit
@@ -93,7 +111,7 @@ class GetMeters(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainView),
     ('/route/([0-9]+)', RouteView),
-    ('/request', RequestRoutes),
+    ('/request', RequestMeters),
     ('/submit', Submit),
     ('/meters', GetMeters),
     ('/setup', Initialize),
