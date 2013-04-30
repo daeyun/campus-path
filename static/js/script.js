@@ -1,4 +1,4 @@
-$(function() {
+        $(function() {
     // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
     function getUrlVars()
     {
@@ -82,8 +82,8 @@ $(function() {
             markers.push(marker);
 
         }
-            var mcOptions = {gridSize: 50, maxZoom: 15};
-            markerClusterer = new MarkerClusterer(map, markers);
+            var mcOptions = {gridSize: 30};
+            markerClusterer = new MarkerClusterer(map, markers, mcOptions);
 
         // Try HTML5 geolocation
         if(navigator.geolocation) {
