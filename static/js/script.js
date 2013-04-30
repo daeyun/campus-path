@@ -174,9 +174,17 @@ $(function() {
         var travelmode;
         if (mode == "driving") {
             travelmode = google.maps.TravelMode.DRIVING;
+            directions.setOptions({ polylineOptions: {strokeColor: "#00FF00"} });
         } else if (mode == "walking") {
             travelmode = google.maps.TravelMode.WALKING;
-            directions.setOptions({ suppressMarkers: true });
+            directions.setOptions({
+                polylineOptions: {
+                    strokeColor: "#000000",
+                    strokeWeight: 7,
+                    strokeOpacity: 0.8,
+                    zIndex: -4,
+                } 
+            });
         }
 
         var request = {
