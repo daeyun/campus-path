@@ -34,11 +34,11 @@ class RouteView(webapp2.RequestHandler):
 # Returns a list of routes not currently sorted by travel time.
 class RequestMeters(webapp2.RequestHandler):
     def get(self):
-        new_request = self.request.get("new_request")
+        request_string = self.request.get("new_request")
 
         #I'm going to use a temp value for now so we can discuss what my request will look like 
 
-        place, (lat, lon) = geocode("700 E Green in Champaign")
+        place, (lat, lon) = geocode(request_string)
         
 #        self.response.out.write(place)
         
@@ -46,7 +46,7 @@ class RequestMeters(webapp2.RequestHandler):
         result = ParkingMeter.proximity_fetch(
             ParkingMeter.query(),
             geo.geotypes.Point(lat, lon),
-            max_results=10,
+            max_results=50,
             max_distance=50000)
 
         meters = []
