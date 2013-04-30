@@ -85,7 +85,8 @@ $(function() {
 
         }
 
-        markerClusterer = new MarkerClusterer(map, markers);
+        var mcOptions = {gridSize: 20, maxZoom: 17};
+        markerClusterer = new MarkerClusterer(map, markers, mcOptions);
 
 
         var current_lat, current_lon;
