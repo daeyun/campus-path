@@ -102,13 +102,13 @@ class Initialize(webapp2.RequestHandler):
 class Update(webapp2.RequestHandler):
     def post(self):
         key = self.request.get("key")
-        lat = self.request.get("lat")
-        lon = self.request.get("lon")
-        tl = self.request.get("time_limit")
-        tpq = self.request.get("time_per_quarter")
-        es = self.request.get("enforcement_start")
-        ee = self.request.get("enforcement_end")
-        con = self.request.get("congestion")
+        # lat = self.request.get("lat")
+        # lon = self.request.get("lon")
+        tl = int(self.request.get("time_limit"))
+        tpq = int(self.request.get("time_per_quarter"))
+        es = int(self.request.get("enforcement_start"))
+        ee = int(self.request.get("enforcement_end"))
+        con = int(self.request.get("congestion"))
 
         #new meters should pass "new" for the key
         if key == "new":
@@ -121,19 +121,23 @@ class Update(webapp2.RequestHandler):
             meter.update_location()
         else:
             #assuming non-new meters don't move (ignoring lat/lon)
-            meter_key = ndb.Key(ParkingMeter, key)
+            meter_key = ndb.Key(ParkingMeter, int(key))
             meter = meter_key.get()
             meter.time_limit=tl
-            meter.time_per_quarter=ttq
+            meter.time_per_quarter=tpq
             meter.enforcement_start=es
             meter.enforcement_end=ee
-            meter.congestino=con
+            meter.congestion=con
 
         #be sure to stay consistent in memcache
         #this can likely be made finer-grained at some point
-        memcache.flush_all_async()
+        memcache.flush_all()
 
+        print (meter)
         meter.put()
+
+        status = "ok"
+        self.response.out.write(status)
 
 
 app = webapp2.WSGIApplication([

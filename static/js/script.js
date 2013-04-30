@@ -17,6 +17,25 @@ $(function() {
         return decodeURIComponent((str+'').replace(/\+/g, '%20'));
     }
 
+
+    $('#myModal form').on('submit', function(event) {
+        var $form = $(this);
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+                if (data == "ok") {
+                    $('#myModal').modal('hide');
+                }
+            }
+        });
+
+        event.preventDefault();
+    });
+
+
     var destination_query = urldecode(getUrlVars().destination);
 
     var drivingDirections;
@@ -88,8 +107,18 @@ $(function() {
                     });
                     google.maps.event.addListener(marker, 'click', function(){
                         infowindow.setContent(
-                            meterDisplay(this.data)
+                            meterDisplay(this.data) +
+                            '<br /><button class="btn" id="updateBtn" type="button">Update</button>'
                         );
+
+
+                        $("#myModal #key").val(this.data.key.toString());
+                        $("#myModal #congestion").val(this.data.congestion.toString());
+                        $("#myModal #time_limit").val(this.data.time_limit.toString());
+                        $("#myModal #time_per_quarter").val(this.data.time_per_quarter.toString());
+                        $("#myModal #enforcement_start").val(this.data.enforcement_start.toString());
+                        $("#myModal #enforcement_end").val(this.data.enforcement_end.toString());
+
                         infowindow.open(map,this);
 
                         meter_pos = new google.maps.LatLng(this.data.lat.toString(),
@@ -106,7 +135,7 @@ $(function() {
                 var infowindow = new google.maps.InfoWindow({
                     map: map,
                     position: current_pos,
-                    content: 'Location found using HTML5.'
+                    content: 'Current Location'
                 });
 
                 map.setCenter(current_pos);
@@ -122,6 +151,13 @@ $(function() {
 
 
     }
+
+
+    $(document).on( "click", "#updateBtn", function(){
+        $('#myModal').modal('show');
+    } );
+
+
 
     google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -215,7 +251,6 @@ $(function() {
 
 
     function meterDisplay(meterData) {
-        console.log(meterData);
         retString = "";
         var time_limit = parseInt(meterData.time_limit);
         if (time_limit > 60)
