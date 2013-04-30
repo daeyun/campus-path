@@ -1,4 +1,23 @@
 $(function() {
+    // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function urldecode(str) {
+        return decodeURIComponent((str+'').replace(/\+/g, '%20'));
+    }
+
+    var destination_query = urldecode(getUrlVars().destination);
 
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
@@ -21,6 +40,7 @@ $(function() {
             'async': false,
             'global': false,
             'url': '/request',
+            'data' : {'new_request': destination_query},
             'dataType': "json",
             'success': function (data) {
             json = data;
@@ -39,9 +59,9 @@ $(function() {
 
         var markers = [];
 
+        /*
         lat = parseFloat(meters.location_lon);
         lon = parseFloat(meters.location_lat);
-
         latLng = new google.maps.LatLng(lon, lat);
         destination_marker = new google.maps.Marker({
             position: latLng,
@@ -49,6 +69,7 @@ $(function() {
             map: map,
             icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
         });
+        */
 
         for (var i = 0; i < meters.meters.length; ++i) {
             lat = meters.meters[i].lat
@@ -137,12 +158,12 @@ $(function() {
     //Example used from google's direction API
     function calcRoute() {
       var start = "Illini Union Book Store";
-      var end = "Siebel Center for computer science";
       var request = {
         origin:start,
-        destination:end,
+        destination:destination_query,
         travelMode: google.maps.TravelMode.DRIVING
       };
+      console.log(destination_query);
       directionsService.route(request, function(result, status) {
         if (status == google.maps.DirectionsStatus.OK) {
           directionsDisplay.setDirections(result);
