@@ -4,7 +4,7 @@ body {
 }
 
 .map-page {
-    background-color:#DBCAA2;
+    background-color:#D4A246;
 }
 
 #map-canvas {
@@ -34,4 +34,18 @@ img {
 
 .container-fluid {
     padding:0;
+}
+
+#bottom {
+    height:40px;
+    padding:0px;
+    margin:0px;
+    display:none;
+}
+
+#bottom div{
+    padding-left:12px;
+    padding-top:5px;
+    font-weight:bold;
+    font-size:16px;
 }

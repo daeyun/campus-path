@@ -80,6 +80,11 @@ $(function() {
         var current_lat, current_lon;
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
+
+                $("#loading").hide(0);
+                $("#bottom").show();
+
+
                 var current_pos = new google.maps.LatLng(position.coords.latitude,
                     position.coords.longitude);
 
@@ -87,7 +92,7 @@ $(function() {
 
                 var mapOptions = {
                     zoom: 15,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
                 var map = new google.maps.Map(document.getElementById('map-canvas'),
                     mapOptions);
@@ -95,6 +100,17 @@ $(function() {
                 walkingDirections.setMap(map);
 
                 var markers = [];
+
+                lat = parseFloat(meters.location_lon);
+                lon = parseFloat(meters.location_lat);
+                latLng = new google.maps.LatLng(lon, lat);
+                destination_marker = new google.maps.Marker({
+                    position: latLng,
+                    draggable: false,
+                    map: map,
+                    zIndex:10,
+                    icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                });
 
                 for (var i = 0; i < meters.meters.length; ++i) {
                     lat = meters.meters[i].lat;
@@ -237,7 +253,7 @@ $(function() {
     }
 
     function resize() {
-        $("#map-canvas").css("height",$(window).height()-50);
+        $("#map-canvas").css("height",$(window).height()-$("#bottom").height());
     }
     resize();
 
