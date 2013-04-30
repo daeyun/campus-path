@@ -34,11 +34,11 @@ class RouteView(webapp2.RequestHandler):
 # Returns a list of routes not currently sorted by travel time.
 class RequestMeters(webapp2.RequestHandler):
     def get(self):
-        new_request = self.request.get("new_request")
+        request_string = self.request.get("new_request")
 
         #I'm going to use a temp value for now so we can discuss what my request will look like 
 
-        place, (lat, lon) = geocode("700 E Green in Champaign")
+        place, (lat, lon) = geocode(request_string)
         
 #        self.response.out.write(place)
         
@@ -46,13 +46,15 @@ class RequestMeters(webapp2.RequestHandler):
         result = ParkingMeter.proximity_fetch(
             ParkingMeter.query(),
             geo.geotypes.Point(lat, lon),
-            max_results=10,
+            max_results=50,
             max_distance=50000)
 
         meters = []
 
+        #if someone wants to make this non-ugly, please go ahead
         for meter in result:
             meter_dict={}
+            meter_dict['key'] = meter.key.id()
             meter_dict['lat'] = meter._get_latitude()
             meter_dict['lon'] = meter._get_longitude()
             meter_dict['time_limit'] = meter.time_limit
@@ -99,14 +101,10 @@ class Initialize(webapp2.RequestHandler):
         self.response.out.write(status)
 
 
-class GetMeters(webapp2.RequestHandler):
-    def get(self):
-
-        q = ndb.GqlQuery("SELECT * FROM ParkingMeters")
-        result = q.fetch(1)
-
-        self.response.out.write(result)
-
+class Update(webapp2.RequestHandler):
+    def post(self):
+        pass
+        
 
 app = webapp2.WSGIApplication([
     ('/', MainView),
