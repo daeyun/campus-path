@@ -109,9 +109,6 @@ app = webapp2.WSGIApplication([
     ('/route', RouteView),
     ('/request', RequestMeters),
     ('/submit', Submit),
-<<<<<<< HEAD
-=======
     ('/update', Update),
->>>>>>> 1e0f693106e37d7e3cb6d8b29fa2db8ecc5c7add
     ('/setup', Initialize),
 ], debug=True)
