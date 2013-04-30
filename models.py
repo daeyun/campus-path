@@ -13,6 +13,8 @@ class ParkingMeter(GeoModel, ndb.Model):
     congestion = ndb.IntegerProperty()    #on a scale of 1-10
 
 
+    #the following methods are borrowed (and modified) from the publicschools geomodel example 
+
     @staticmethod
     def public_attributes():
         """Returns a set of simple attributes on parking meter entities."""
