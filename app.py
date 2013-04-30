@@ -111,6 +111,5 @@ app = webapp2.WSGIApplication([
     ('/route', RouteView),
     ('/request', RequestMeters),
     ('/submit', Submit),
-    ('/meters', GetMeters),
     ('/setup', Initialize),
 ], debug=True)
