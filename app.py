@@ -51,6 +51,7 @@ class RequestMeters(webapp2.RequestHandler):
 
         meters = []
 
+        #if someone wants to make this non-ugly, please go ahead
         for meter in result:
             meter_dict={}
             meter_dict['key'] = meter.key.id()
@@ -100,14 +101,10 @@ class Initialize(webapp2.RequestHandler):
         self.response.out.write(status)
 
 
-class GetMeters(webapp2.RequestHandler):
-    def get(self):
-
-        q = ndb.GqlQuery("SELECT * FROM ParkingMeters")
-        result = q.fetch(1)
-
-        self.response.out.write(result)
-
+class Update(webapp2.RequestHandler):
+    def post(self):
+        pass
+        
 
 app = webapp2.WSGIApplication([
     ('/', MainView),
