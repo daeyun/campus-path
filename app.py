@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.webapp import template
 from models import *
 from helpers import *
+import geo.geotypes
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(
     os.path.join(os.path.dirname(__file__), 'templates/')),
@@ -42,11 +43,11 @@ class RequestRoutes(webapp2.RequestHandler):
         self.response.out.write(place)
         
         # query the data store and get the result
-#        result = ParkingMeter.proximity_fetch(
-#            ParkingMeter.all(),
-#            geotypes.Point(lat, lon),
-#            max_results=100)
-        result = {}
+        result = ParkingMeter.proximity_fetch(
+            ParkingMeter.query(),
+            geo.geotypes.Point(lat, lon),
+            max_results=100,
+            max_distance=50000)
 
         self.response.out.write(result)
 
