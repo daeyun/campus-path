@@ -53,16 +53,7 @@ class RequestMeters(webapp2.RequestHandler):
 
         #if someone wants to make this non-ugly, please go ahead
         for meter in result:
-            meter_dict={}
-            meter_dict['key'] = meter.key.id()
-            meter_dict['lat'] = meter._get_latitude()
-            meter_dict['lon'] = meter._get_longitude()
-            meter_dict['time_limit'] = meter.time_limit
-            meter_dict['time_per_quarter'] = meter.time_per_quarter
-            meter_dict['enforcement_start'] = meter.enforcement_start
-            meter_dict['enforcement_end'] = meter.enforcement_end
-            meter_dict['congestion'] = meter.congestion
-            meters.append(meter_dict)
+            meters.append(makeMeterDict(meter))
 
         return_dict = {}
         return_dict['location_string'] = place
@@ -103,7 +94,14 @@ class Initialize(webapp2.RequestHandler):
 
 class Update(webapp2.RequestHandler):
     def post(self):
-        pass
+        key = self.request.get("key")
+        lat = self.request.get("lat")
+        lon = self.request.get("lon")
+        time_limit = self.request.get("time_limit")
+        time_per_quarter = self.request.get("time_per_quarter")
+        enforcement_start = self.request.get("enforcement_start")
+        enforcement_end = self.request.get("enforcement_end")
+        congestion = self.request.get("congestion")
         
 
 app = webapp2.WSGIApplication([
@@ -111,5 +109,9 @@ app = webapp2.WSGIApplication([
     ('/route', RouteView),
     ('/request', RequestMeters),
     ('/submit', Submit),
+<<<<<<< HEAD
+=======
+    ('/update', Update),
+>>>>>>> 1e0f693106e37d7e3cb6d8b29fa2db8ecc5c7add
     ('/setup', Initialize),
 ], debug=True)

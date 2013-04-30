@@ -13,6 +13,18 @@ from urllib2 import urlopen
 from geo.geomodel import GeoModel
 
 
+def makeMeterDict(meter):
+    meter_dict={}
+    meter_dict['key'] = meter.key.id()
+    meter_dict['lat'] = meter._get_latitude()
+    meter_dict['lon'] = meter._get_longitude()
+    meter_dict['time_limit'] = meter.time_limit
+    meter_dict['time_per_quarter'] = meter.time_per_quarter
+    meter_dict['enforcement_start'] = meter.enforcement_start
+    meter_dict['enforcement_end'] = meter.enforcement_end
+    meter_dict['congestion'] = meter.congestion
+    return meter_dict
+
 def populate():
     try:
         finput = csv.reader(open("data/parkingmeters.csv", 'rb'),
