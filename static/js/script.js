@@ -50,6 +50,9 @@ $(function() {
             });
         return json;
         })(); 
+
+        $("span#location").html(meters.location_string);
+
         
         var mapOptions = {
             zoom: 15,
@@ -183,6 +186,15 @@ $(function() {
             }
         });
     }
+    
+    function resize() {
+        $("#map-canvas").css("height",$(window).height()-50);
+    }
+    resize();
+
+    $(window).resize(function() {
+        resize();
+    });
     
     //Example used from google's direction API
 
