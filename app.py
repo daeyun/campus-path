@@ -99,12 +99,32 @@ class Update(webapp2.RequestHandler):
         key = self.request.get("key")
         lat = self.request.get("lat")
         lon = self.request.get("lon")
-        time_limit = self.request.get("time_limit")
-        time_per_quarter = self.request.get("time_per_quarter")
-        enforcement_start = self.request.get("enforcement_start")
-        enforcement_end = self.request.get("enforcement_end")
-        congestion = self.request.get("congestion")
-        
+        tl = self.request.get("time_limit")
+        tpq = self.request.get("time_per_quarter")
+        es = self.request.get("enforcement_start")
+        ee = self.request.get("enforcement_end")
+        con = self.request.get("congestion")
+
+        #new meters should pass "new" for the key
+        if key == "new":
+            meter = ParkingMeter(location=ndb.GeoPt(float(lat), float(lon)),
+                                 time_limit=tl,
+                                 time_per_quarter=tpq,
+                                 enforcement_start=es,
+                                 enforcement_end=ee,
+                                 congestion=con)
+            meter.update_location()
+        else:
+            #assuming non-new meters don't move (ignoring lat/lon)
+            meter_key = ndb.Key(ParkingMeter, key)
+            meter = meter_key.get()
+            meter.time_limit=tl
+            meter.time_per_quarter=ttq
+            meter.enforcement_start=es
+            meter.enforcement_end=ee
+            meter.congestino=con
+        meter.put()
+
 
 app = webapp2.WSGIApplication([
     ('/', MainView),
