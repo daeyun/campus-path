@@ -53,6 +53,7 @@ class RequestMeters(webapp2.RequestHandler):
 
         for meter in result:
             meter_dict={}
+            meter_dict['key'] = meter.key.id()
             meter_dict['lat'] = meter._get_latitude()
             meter_dict['lon'] = meter._get_longitude()
             meter_dict['time_limit'] = meter.time_limit
