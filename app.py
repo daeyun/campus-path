@@ -38,11 +38,14 @@ class RequestMeters(webapp2.RequestHandler):
         if request_string == "":
             return
 
-        #I'm going to use a temp value for now so we can discuss what my request will look like 
-
         place, (lat, lon) = geocode(request_string)
-        
-#        self.response.out.write(place)
+
+        #see if we've cached this
+        json_response = memcache.get(place)
+        if json_response is not None:
+            self.response.out.write(json_response)
+            return
+
         
         # query the data store and get the result
         result = ParkingMeter.proximity_fetch(
@@ -62,8 +65,10 @@ class RequestMeters(webapp2.RequestHandler):
         return_dict['location_lat'] = lat
         return_dict['location_lon'] = lon
         return_dict['meters'] = meters
-        
-        self.response.out.write(json.dumps(return_dict))
+
+        json_response = json.dumps(return_dict)
+        memcache.add(place, json_response)
+        self.response.out.write(json_response)
             
 
 
