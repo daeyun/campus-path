@@ -1,4 +1,5 @@
-        $(function() {
+$(function() {
+
     // credit: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
     function getUrlVars()
     {
@@ -82,30 +83,36 @@
             markers.push(marker);
 
         }
-            var mcOptions = {gridSize: 30};
-            markerClusterer = new MarkerClusterer(map, markers, mcOptions);
+        var mcOptions = {gridSize: 30};
+        markerClusterer = new MarkerClusterer(map, markers, mcOptions);
 
+
+        var current_lat, current_lon;
         // Try HTML5 geolocation
         if(navigator.geolocation) {
             console.log("geolocation works");
             navigator.geolocation.getCurrentPosition(function(position) {
-                var pos = new google.maps.LatLng(position.coords.latitude,
+                var current_pos = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
+
+                calcRoute(current_pos);
 
                 var infowindow = new google.maps.InfoWindow({
                     map: map,
-                    position: pos,
+                    position: current_pos,
                     content: 'Location found using HTML5.'
                 });
 
-                map.setCenter(pos);
+                map.setCenter(current_pos);
                 }, function() {
-                handleNoGeolocation(true);
-            });
-            } else {
+                    handleNoGeolocation(true);
+                });
+        } else {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
+
+
     }
     
     google.maps.event.addDomListener(window, 'load', initialize);
@@ -154,23 +161,24 @@
         });
 
     });
+
+    function calcRoute(pos) {
+        console.log(pos);
+        var start = pos;
+        var request = {
+            origin:start,
+            destination:destination_query,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        console.log(destination_query);
+        directionsService.route(request, function(result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(result);
+            }
+        });
+    }
     
     //Example used from google's direction API
-    function calcRoute() {
-      var start = "Illini Union Book Store";
-      var request = {
-        origin:start,
-        destination:destination_query,
-        travelMode: google.maps.TravelMode.DRIVING
-      };
-      console.log(destination_query);
-      directionsService.route(request, function(result, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(result);
-        }
-      });
-    }
-    calcRoute();
 
    /* $.getJSON('/static/data/meters.json', function(data) {
         initialize(data)
