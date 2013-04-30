@@ -48,7 +48,7 @@ class RequestMeters(webapp2.RequestHandler):
         result = ParkingMeter.proximity_fetch(
             ParkingMeter.query(),
             geo.geotypes.Point(lat, lon),
-            max_results=50,
+            max_results=200,
             max_distance=50000)
 
         meters = []
