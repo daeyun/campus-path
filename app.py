@@ -21,9 +21,9 @@ class MainView(webapp2.RequestHandler):
 
 
 class RouteView(webapp2.RequestHandler):
-    def get(self, routeID):
+    def get(self):
         template_values = {}
-        template_values["route_id"] = routeID
+        template_values["destination"] = self.request.get("destination")
 
         views = jinja_environment.get_template('route.html')
         self.response.out.write(views.render(template_values))
@@ -106,7 +106,7 @@ class Update(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainView),
-    ('/route/([0-9]+)', RouteView),
+    ('/route', RouteView),
     ('/request', RequestMeters),
     ('/submit', Submit),
     ('/update', Update),

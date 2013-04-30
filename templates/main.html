@@ -6,11 +6,11 @@
 
             <h2>Find a Parking Spot</h2>
 
-            <form class="form-horizontal">
+            <form class="form-horizontal" action="/route" method="get">
                 <div class="control-group">
                     <label class="control-label" for="inputTo">Destination</label>
                     <div class="controls">
-                        <input type="text" class="span6" id="inputTo" placeholder="Where are you going?">
+                        <input name="destination" type="text" class="span6" id="inputTo" placeholder="Where are you going?" value="700 West Green Street, Champaign, IL 61820, USA">
                     </div>
                     <div class="controls">
                         <div class="btn-toolbar">

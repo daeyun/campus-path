@@ -20,7 +20,7 @@ $(function() {
         $.ajax({
             'async': false,
             'global': false,
-            'url': '/static/data/meters.json',
+            'url': '/request',
             'dataType': "json",
             'success': function (data) {
             json = data;
@@ -39,9 +39,21 @@ $(function() {
 
         var markers = [];
 
-        for (var i = 0; i < meters.length; ++i) {
-            l = meters.data[i].split(', ')
-            var latLng = new google.maps.LatLng(l[0], l[1]);
+        lat = parseFloat(meters.location_lon);
+        lon = parseFloat(meters.location_lat);
+
+        latLng = new google.maps.LatLng(lon, lat);
+        destination_marker = new google.maps.Marker({
+            position: latLng,
+            draggable: false,
+            map: map,
+            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        });
+
+        for (var i = 0; i < meters.meters.length; ++i) {
+            lat = meters.meters[i].lat
+            lon = meters.meters[i].lon
+            var latLng = new google.maps.LatLng(lat, lon);
             var marker = new google.maps.Marker({
                 position: latLng,
                 draggable: false,
