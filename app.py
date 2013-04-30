@@ -34,7 +34,9 @@ class RouteView(webapp2.RequestHandler):
 # Returns a list of routes not currently sorted by travel time.
 class RequestMeters(webapp2.RequestHandler):
     def get(self):
-        request_string = self.request.get("new_request")
+        request_string = self.request.get("new_request", default_value="")
+        if request_string == "":
+            return
 
         #I'm going to use a temp value for now so we can discuss what my request will look like 
 
