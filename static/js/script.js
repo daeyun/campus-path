@@ -1,6 +1,7 @@
 $(function() {
 
-
+    var directionsDisplay;
+    var directionsService = new google.maps.DirectionsService();
     var locatingFrom, locatingTo;
     var map;
 
@@ -13,7 +14,7 @@ $(function() {
     // <!-- end google api example -->
     function initialize() {
         console.log("running initialize function");
-
+        directionsDisplay = new google.maps.DirectionsRenderer();
         var meters = (function () {
         var json = null;
         $.ajax({
@@ -34,6 +35,7 @@ $(function() {
         };
         var map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
+        directionsDisplay.setMap(map);
 
         var markers = [];
 
@@ -71,7 +73,7 @@ $(function() {
             // Browser doesn't support Geolocation
             handleNoGeolocation(false);
         }
-        }
+    }
     
     google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -119,6 +121,23 @@ $(function() {
         });
 
     });
+    
+    //Example used from google's direction API
+    function calcRoute() {
+      var start = "Illini Union Book Store";
+      var end = "Siebel Center for computer science";
+      var request = {
+        origin:start,
+        destination:end,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+      directionsService.route(request, function(result, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(result);
+        }
+      });
+    }
+    calcRoute();
 
    /* $.getJSON('/static/data/meters.json', function(data) {
         initialize(data)
