@@ -103,10 +103,11 @@ $(function() {
 
                 lat = parseFloat(meters.location_lon);
                 lon = parseFloat(meters.location_lat);
-                latLng = new google.maps.LatLng(lon, lat);
+                var queryLatLng = new google.maps.LatLng(lon, lat);
                 destination_marker = new google.maps.Marker({
-                    position: latLng,
+                    position: queryLatLng,
                     draggable: false,
+                    optimized: false,
                     map: map,
                     zIndex:10,
                     icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
@@ -119,6 +120,7 @@ $(function() {
                     var marker = new google.maps.Marker({
                         position: latLng,
                         draggable: false,
+                        optimized: false,
                         data: meters.meters[i],
                     });
                     google.maps.event.addListener(marker, 'click', function(){
@@ -154,7 +156,7 @@ $(function() {
                     content: 'Current Location'
                 });
 
-                map.setCenter(current_pos);
+                map.setCenter(queryLatLng);
 
             }, function() {
                 handleNoGeolocation(true);

@@ -10,7 +10,7 @@
 <tr><td><b>Test Suite</b></td></tr>
 <tr><td><a href="HTMLtests.html">Test Defaults</a></td></tr>
 <tr><td><a href="InputTest.html">Test with input</a></td></tr>
-<tr><td><a href="ReloadTest.html">Test reload</a></td></tr>
+<tr><td><a href="ReloadTest.html">Test popup</a></td></tr>
 <tr><td><a href="InputAddressTest.html">Test with address as input</a></td></tr>
 </tbody></table>
 </body>
