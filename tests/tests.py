@@ -5,7 +5,7 @@ from helpers import *
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
-
+import webtest
 class TestApp(unittest.TestCase):
     
     def setUp(self):
@@ -63,6 +63,38 @@ class TestApp(unittest.TestCase):
         self.assertEqual(40.1164,lat_orig)
         self.assertEqual(88.2433,lon_orig)
 
+
+class TestHandlers(unittest.TestCase):
+    def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.setup_env(app_id='illiniparking')
+        self.testbed.activate()
+        self.testapp = webtest.TestApp(app)
+        self.testbed.init_urlfetch_stub()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+
+    def tearDown(self):
+        self.testbed.deactivate()
         
+    def test_getwebb(self):
+        #tests that everything responds
+        result = self.testapp.get("/")
+        self.assertEqual(result.status, "200 OK")
+        result = self.testapp.get("/request")
+        self.assertEqual(result.status, "200 OK")
+        result = self.testapp.get("/route?destination=Scott+Park%2C+Champaign%2C+IL")
+        self.assertEqual(result.status, "200 OK")
+        postData = {'key' : 1, 'time_limit' : 60, 
+                                'time_per_quarter' : 15, 
+                                'enforcement_start' : 8,
+                                'enforcement_end' : 6,
+                                'congestion' : 1
+                                }
+        #result = self.testapp.post("/update", postData)
+        #self.assertEqual(result.status, "200 OK")
+        #postData.key='new'       
+        result = self.testapp.get("/setup?command=populate")
+        self.assertEqual(result.status, "200 OK")
 if __name__ == '__main__':
     unittest.main()
