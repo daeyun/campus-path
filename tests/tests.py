@@ -96,5 +96,66 @@ class TestHandlers(unittest.TestCase):
         #postData.key='new'       
         result = self.testapp.get("/setup?command=populate")
         self.assertEqual(result.status, "200 OK")
+
+class TestHelpers(unittest.TestCase):
+    def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.setup_env(app_id='illiniparking')
+        self.testbed.activate()
+        self.testapp = webtest.TestApp(app)
+        self.testbed.init_urlfetch_stub()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+
+    def tearDown(self):
+        self.testbed.deactivate()
+        
+    def test_makeMeterDict(self):
+        meter = ParkingMeter(location=ndb.GeoPt(float(41.8500), float(87.6500)),
+                                         time_limit=60,
+                                         time_per_quarter=15,
+                                         enforcement_start=8,
+                                         enforcement_end=6,
+                                         congestion=1)
+        meter.update_location()
+        meter.put()
+
+        key = meter.key.id()
+        lat = meter._get_latitude()
+        lon = meter._get_longitude()
+        time_limit = meter.time_limit
+        time_per_quarter = meter.time_per_quarter
+        enforcement_start = meter.enforcement_start
+        enforcement_end = meter.enforcement_end
+        congestion = meter.congestion
+
+        meter_dict = makeMeterDict(meter)
+        
+        self.assertEqual(meter_dict['key'], key)
+        self.assertEqual(meter_dict['lat'], lat)
+        self.assertEqual(meter_dict['lon'], lon)
+        self.assertEqual(meter_dict['time_limit'], time_limit)
+        self.assertEqual(meter_dict['time_per_quarter'], time_per_quarter)
+        self.assertEqual(meter_dict['enforcement_start'], enforcement_start)
+        self.assertEqual(meter_dict['enforcement_end'], enforcement_end)
+        self.assertEqual(meter_dict['congestion'], congestion)
+
+    def test_populate(self):
+        populate()
+        qry = ParkingMeter.query()
+        meter = qry.fetch(limit=1)
+        self.assertNotEqual(meter, None)
+
+    def test_geocode(self):
+        coded_string = geocode("Scott Park, Champaign")
+        print coded_string[0]
+        self.assertEqual(coded_string[0], "Scott Park, Champaign, IL 61820, USA")
+    
+
+
+        
+
+
+
 if __name__ == '__main__':
     unittest.main()
