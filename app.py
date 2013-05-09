@@ -110,6 +110,20 @@ class Update(webapp2.RequestHandler):
         ee = int(self.request.get("enforcement_end"))
         con = int(self.request.get("congestion"))
 
+        print tl
+
+        if (tl > 100) or (tl < 1):
+            status = "Input Error: Time limit range"
+            print status
+            self.response.out.write(status)
+            return
+
+        if (con > 10) or (con < 0):
+            status = "Input Error: Congestion range"
+            print status
+            self.response.out.write(status)
+            return
+
         #new meters should pass "new" for the key
         if key == "new":
             meter = ParkingMeter(location=ndb.GeoPt(float(lat), float(lon)),

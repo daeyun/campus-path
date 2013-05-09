@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://illiniparking.appspot.com/" />
-<title>Test reload</title>
+<link rel="selenium.base" href="http://localhost:11080" />
+<title>test update time limit 2 (invalid input)</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test reload</td></tr>
+<tr><td rowspan="1" colspan="3">test update time limit 2 (invalid input)</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -52,14 +52,9 @@
 	<td>time_limit_backup</td>
 </tr>
 <tr>
-	<td>storeEval</td>
-	<td>javascript{Math.floor(Math.random()*60);}</td>
-	<td>random_number</td>
-</tr>
-<tr>
 	<td>type</td>
 	<td>id=time_limit</td>
-	<td>${random_number}</td>
+	<td>999</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -109,7 +104,7 @@
 <tr>
 	<td>verifyValue</td>
 	<td>css=#time_limit</td>
-	<td>${random_number}</td>
+	<td>${time_limit_backup}</td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -131,6 +126,7 @@
 	<td>css=div.modal-footer &gt; button.btn</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>

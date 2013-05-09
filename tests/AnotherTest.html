@@ -3,29 +3,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://illiniparking.appspot.com/" />
-<title>Test with input</title>
+<link rel="selenium.base" href="http://localhost:11080" />
+<title>AnotherTest</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test with input</td></tr>
+<tr><td rowspan="1" colspan="3">AnotherTest</td></tr>
 </thead><tbody>
 <tr>
-	<td>open</td>
-	<td>/</td>
-	<td></td>
+	<td>storeEval</td>
+	<td>javascript{Math.floor(Math.random()*60);}</td>
+	<td>test</td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>id=inputTo</td>
-	<td>Illini Union Book Store</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=button.btn.btn-primary</td>
+	<td>echo</td>
+	<td>${test}</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
