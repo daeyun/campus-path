@@ -76,6 +76,7 @@ class RequestMeters(webapp2.RequestHandler):
 # POST -> route: Route, start_time: time, end_time: time
 # Submits a feedback on how long it actually took. Start and end times are
 # kept on the client side.
+"""
 class Submit(webapp2.RequestHandler):
     def post(self):
         route = self.request.get("route")
@@ -86,6 +87,7 @@ class Submit(webapp2.RequestHandler):
 
         status = "ok"
         self.response.out.write(status)
+"""
 
 
 class Initialize(webapp2.RequestHandler):
@@ -144,7 +146,7 @@ app = webapp2.WSGIApplication([
     ('/', MainView),
     ('/route', RouteView),
     ('/request', RequestMeters),
-    ('/submit', Submit),
+    #('/submit', Submit),
     ('/update', Update),
     ('/setup', Initialize),
 ], debug=True)
