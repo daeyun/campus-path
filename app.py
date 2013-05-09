@@ -114,7 +114,7 @@ class Update(webapp2.RequestHandler):
 
         print tl
 
-        if (tl > 100) or (tl < 1):
+        if (tl > 600) or (tl < 1):
             status = "Input Error: Time limit range"
             print status
             self.response.out.write(status)
