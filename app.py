@@ -57,7 +57,6 @@ class RequestMeters(webapp2.RequestHandler):
         meters = []
 
         #if someone wants to make this non-ugly, please go ahead
-        print meter
         for meter in result:
             meters.append(makeMeterDict(meter))
 
