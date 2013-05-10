@@ -6,7 +6,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
 import webtest
-class TestApp(unittest.TestCase):
+class TestNDB(unittest.TestCase):
     
     def setUp(self):
         self.testbed = testbed.Testbed()
