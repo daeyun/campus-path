@@ -80,6 +80,7 @@ class TestHandlers(unittest.TestCase):
                                          enforcement_start=8,
                                          enforcement_end=6,
                                          congestion=1)
+        self.test_meter.update_location()
         self.test_meter.put()
 
     def tearDown(self):
