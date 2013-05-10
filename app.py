@@ -126,7 +126,9 @@ class Update(webapp2.RequestHandler):
             self.response.out.write(status)
             return
 
+        '''
         #new meters should pass "new" for the key
+        #this is not currently implemented
         if key == "new":
             meter = ParkingMeter(location=ndb.GeoPt(float(lat), float(lon)),
                                  time_limit=tl,
@@ -136,14 +138,15 @@ class Update(webapp2.RequestHandler):
                                  congestion=con)
             meter.update_location()
         else:
+        '''
             #assuming non-new meters don't move (ignoring lat/lon)
-            meter_key = ndb.Key(ParkingMeter, int(key))
-            meter = meter_key.get()
-            meter.time_limit=tl
-            meter.time_per_quarter=tpq
-            meter.enforcement_start=es
-            meter.enforcement_end=ee
-            meter.congestion=con
+        meter_key = ndb.Key(ParkingMeter, int(key))
+        meter = meter_key.get()
+        meter.time_limit=tl
+        meter.time_per_quarter=tpq
+        meter.enforcement_start=es
+        meter.enforcement_end=ee
+        meter.congestion=con
 
         #be sure to stay consistent in memcache
         #this can likely be made finer-grained at some point

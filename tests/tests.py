@@ -91,7 +91,11 @@ class TestHandlers(unittest.TestCase):
         result = self.testapp.get("/request")
         self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/route?destination=Scott+Park%2C+Champaign%2C+IL")
+        self.assertEqual(result.status, "200 OK")      
+        result = self.testapp.get("/setup?command=populate")
         self.assertEqual(result.status, "200 OK")
+        
+    def test_postwebb(self):
         postData = {'key' : self.test_meter.key.id(), 'time_limit' : 60, 
                                 'time_per_quarter' : 15, 
                                 'enforcement_start' : 8,
@@ -100,8 +104,18 @@ class TestHandlers(unittest.TestCase):
                                 }
         result = self.testapp.post("/update", postData)
         self.assertEqual(result.status, "200 OK")
-        #postData.key='new'       
-        result = self.testapp.get("/setup?command=populate")
+        postData['congestion'] = -1
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['congestion'] = 11
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['congestion'] = 1
+        postData['time_limit'] = 1000
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['time_limit'] = -1
+        result=self.testapp.post("/update",postData)
         self.assertEqual(result.status, "200 OK")
 
 class TestHelpers(unittest.TestCase):
