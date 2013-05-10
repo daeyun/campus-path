@@ -73,6 +73,13 @@ class TestHandlers(unittest.TestCase):
         self.testbed.init_urlfetch_stub()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
+        self.test_meter = ParkingMeter(location=ndb.GeoPt(float(41.8500), float(87.6500)),
+                                         time_limit=60,
+                                         time_per_quarter=15,
+                                         enforcement_start=8,
+                                         enforcement_end=6,
+                                         congestion=1)
+        self.test_meter.put()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -83,18 +90,34 @@ class TestHandlers(unittest.TestCase):
         self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/request")
         self.assertEqual(result.status, "200 OK")
-        result = self.testapp.get("/route?destination=Scott+Park%2C+Champaign%2C+IL")
+        result = self.testapp.get("/request?new_request=Scott+Park%2C+Champaign%2C+IL")
         self.assertEqual(result.status, "200 OK")
-        postData = {'key' : 1, 'time_limit' : 60, 
+        result = self.testapp.get("/route?destination=Scott+Park%2C+Champaign%2C+IL")
+        self.assertEqual(result.status, "200 OK")      
+        result = self.testapp.get("/setup?command=populate")
+        self.assertEqual(result.status, "200 OK")
+        
+    def test_postwebb(self):
+        postData = {'key' : self.test_meter.key.id(), 'time_limit' : 60, 
                                 'time_per_quarter' : 15, 
                                 'enforcement_start' : 8,
                                 'enforcement_end' : 6,
                                 'congestion' : 1
                                 }
-        #result = self.testapp.post("/update", postData)
-        #self.assertEqual(result.status, "200 OK")
-        #postData.key='new'       
-        result = self.testapp.get("/setup?command=populate")
+        result = self.testapp.post("/update", postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['congestion'] = -1
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['congestion'] = 11
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['congestion'] = 1
+        postData['time_limit'] = 1000
+        result=self.testapp.post("/update",postData)
+        self.assertEqual(result.status, "200 OK")
+        postData['time_limit'] = -1
+        result=self.testapp.post("/update",postData)
         self.assertEqual(result.status, "200 OK")
 
 class TestHelpers(unittest.TestCase):
