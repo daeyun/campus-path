@@ -9,7 +9,7 @@
 <table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
 <tr><td><b>Test Suite</b></td></tr>
 <tr><td><a href="HTMLtests.html">Test Defaults</a></td></tr>
-<tr><td><a href="InputTest.html">Test with input</a></td></tr>
+<tr><td><a href="InputTest.html">Test geo coding</a></td></tr>
 <tr><td><a href="ReloadTest.html">Test update time limit</a></td></tr>
 <tr><td><a href="update_time_range_check.html">test update time limit 2 (invalid input)</a></td></tr>
 </tbody></table>
