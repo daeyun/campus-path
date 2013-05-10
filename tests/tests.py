@@ -90,6 +90,8 @@ class TestHandlers(unittest.TestCase):
         self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/request")
         self.assertEqual(result.status, "200 OK")
+        result = self.testapp.get("/request?new_request=Scott+Park%2C+Champaign%2C+IL")
+        self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/route?destination=Scott+Park%2C+Champaign%2C+IL")
         self.assertEqual(result.status, "200 OK")      
         result = self.testapp.get("/setup?command=populate")
