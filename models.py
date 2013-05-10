@@ -26,9 +26,6 @@ class ParkingMeter(GeoModel, ndb.Model):
         return self.location.lat if self.location else None
 
     def _set_latitude(self, lat):
-        if not self.location:
-            self.location = ndb.GeoPt()
-
         self.location.lat = lat
 
     latitude = property(_get_latitude, _set_latitude)
@@ -37,9 +34,6 @@ class ParkingMeter(GeoModel, ndb.Model):
         return self.location.lon if self.location else None
 
     def _set_longitude(self, lon):
-        if not self.location:
-            self.location = ndb.GeoPt()
-
         self.location.lon = lon
 
     longitude = property(_get_longitude, _set_longitude)

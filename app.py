@@ -112,17 +112,14 @@ class Update(webapp2.RequestHandler):
         ee = int(self.request.get("enforcement_end"))
         con = int(self.request.get("congestion"))
 
-        print tl
 
         if (tl > 600) or (tl < 1):
             status = "Input Error: Time limit range"
-            print status
             self.response.out.write(status)
             return
 
         if (con > 10) or (con < 0):
             status = "Input Error: Congestion range"
-            print status
             self.response.out.write(status)
             return
 
@@ -152,7 +149,6 @@ class Update(webapp2.RequestHandler):
         #this can likely be made finer-grained at some point
         memcache.flush_all()
 
-        print (meter)
         meter.put()
 
         status = "ok"

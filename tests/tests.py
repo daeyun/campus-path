@@ -38,9 +38,10 @@ class TestApp(unittest.TestCase):
         self.assertEqual(atts[2], 'enforcement_start')
         self.assertEqual(atts[3], 'enforcement_end')
         self.assertEqual(atts[4], 'congestion')
+
         
     def test_set(self):
-        test_meter = ParkingMeter(location=ndb.GeoPt(float(41.8500), float(87.6500)),
+        test_meter = ParkingMeter(location=ndb.GeoPt(float(40.1164), float(88.2433)),
                                          time_limit=60,
                                          time_per_quarter=15,
                                          enforcement_start=8,
@@ -89,6 +90,8 @@ class TestHandlers(unittest.TestCase):
         result = self.testapp.get("/")
         self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/request")
+        self.assertEqual(result.status, "200 OK")
+        result = self.testapp.get("/request?new_request=Scott+Park%2C+Champaign%2C+IL")
         self.assertEqual(result.status, "200 OK")
         result = self.testapp.get("/request?new_request=Scott+Park%2C+Champaign%2C+IL")
         self.assertEqual(result.status, "200 OK")
