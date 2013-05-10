@@ -174,7 +174,6 @@ class TestHelpers(unittest.TestCase):
 
     def test_geocode(self):
         coded_string = geocode("Scott Park, Champaign")
-        print coded_string[0]
         self.assertEqual(coded_string[0], "Scott Park, Champaign, IL 61820, USA")
     
 
